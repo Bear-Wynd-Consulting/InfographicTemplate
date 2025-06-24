@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Case for Advanced Functional Testing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            max-height: 350px;
+            width: 100%;
+            max-width: 600px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 1.75rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .download-loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #000000;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1a6aff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-white text-black">
+
+    <div class="container mx-auto p-4 md:p-8" id="infographicContent">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-[#000000] mb-2">The Imperative for Advanced Functional Testing</h1>
+            <p class="text-lg md:text-xl text-[#1a6aff]">Enhancing Application Quality and Accelerating Delivery in a Complex Tech Landscape</p>
+        </header>
+
+        <main class="space-y-16">
+
+            <section id="challenges">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#000000]">Current Testing Hurdles: A Widening Gap</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center flex flex-col justify-between">
+                        <div>
+                            <div class="text-5xl mb-4">🧩</div>
+                            <h3 class="text-xl font-semibold mb-2 text-[#1a6aff]">Limited Coverage</h3>
+                            <p class="text-black">Our traditional tools struggle to test modern microservices and API-driven architectures, creating significant blind spots.</p>
+                        </div>
+                        <button class="mt-4 px-4 py-2 bg-[#1a6aff] text-white rounded-md hover:bg-[#00008b] transition-colors duration-200" onclick="showExplanation('limited-coverage')">✨ Elaborate ✨</button>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center flex flex-col justify-between">
+                        <div>
+                            <div class="text-5xl mb-4">🐌</div>
+                            <h3 class="text-xl font-semibold mb-2 text-[#1a6aff]">Manual Bottlenecks</h3>
+                            <p class="text-black">Over-reliance on manual testing for complex scenarios slows down release cycles and increases the risk of human error.</p>
+                        </div>
+                        <button class="mt-4 px-4 py-2 bg-[#1a6aff] text-white rounded-md hover:bg-[#00008b] transition-colors duration-200" onclick="showExplanation('manual-bottlenecks')">✨ Elaborate ✨</button>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center flex flex-col justify-between">
+                        <div>
+                            <div class="text-5xl mb-4">🔧</div>
+                            <h3 class="text-xl font-semibold mb-2 text-[#1a6aff]">High Maintenance</h3>
+                            <p class="text-black">Automated tests are brittle and break easily with UI changes, consuming valuable engineering time for constant fixes.</p>
+                        </div>
+                        <button class="mt-4 px-4 py-2 bg-[#1a6aff] text-white rounded-md hover:bg-[#00008b] transition-colors duration-200" onclick="showExplanation('high-maintenance')">✨ Elaborate ✨</button>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center flex flex-col justify-between">
+                        <div>
+                            <div class="text-5xl mb-4">⏳</div>
+                            <h3 class="text-xl font-semibold mb-2 text-[#1a6aff]">Slow Feedback</h3>
+                            <p class="text-black">Delayed test results hinder our agile process, preventing developers from fixing bugs quickly and efficiently.</p>
+                        </div>
+                        <button class="mt-4 px-4 py-2 bg-[#1a6aff] text-white rounded-md hover:bg-[#00008b] transition-colors duration-200" onclick="showExplanation('slow-feedback')">✨ Elaborate ✨</button>
+                    </div>
+                </div>
+                <div class="text-center mt-8 space-x-4">
+                    <button class="px-6 py-3 bg-[#e1bc36] text-black font-semibold rounded-md hover:bg-[#b0902b] transition-colors duration-200" onclick="showBestPractices()">✨ Get Best Practice Suggestion ✨</button>
+                    <button class="px-6 py-3 bg-[#00008b] text-white font-semibold rounded-md hover:bg-[#00004a] transition-colors duration-200" onclick="downloadPdf()">⬇️ Download as PDF ⬇️</button>
+                </div>
+            </section>
+            
+            <section id="drivers">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#000000]">The Drivers of Complexity</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-[#1a6aff]">The Rise of AI and Hybrid Data</h3>
+                        <p class="mb-4 text-black">Our applications are no longer simple interfaces. They are powered by complex AI models and access data across a hybrid cloud and on-premise infrastructure. This creates new, significant testing challenges that our current tools cannot handle.</p>
+                        <div class="chart-container">
+                            <canvas id="complexityDriversChart"></canvas>
+                        </div>
+                        <p class="mt-4 text-sm text-black text-center">This chart illustrates the composition of challenges introduced by modern application architectures, with AI integration and Hybrid Data Access being major contributors.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
+                        <h3 class="text-2xl font-bold mb-4 text-[#1a6aff]">AI & MCP Testing Demands</h3>
+                        <p class="mb-4 text-black">Testing AI components requires validating model integration, data dependencies, and complex workflows. Our tools must evolve to handle this new paradigm.</p>
+                        <ul class="space-y-3 mb-4">
+                            <li class="flex items-start"><span class="text-[#e1bc36] mr-3 mt-1">➔</span><span><strong class="text-[#1a6aff]">Model Integration:</strong> Ensuring AI outputs are correctly used.</span></li>
+                            <li class="flex items-start"><span class="text-[#e1bc36] mr-3 mt-1">➔</span><span><strong class="text-[#1a6aff]">Complex Workflows:</b> Testing business processes influenced by AI.</span></li>
+                            <li class="flex items-start"><span class="text-[#e1bc36] mr-3 mt-1">➔</span><span><strong class="text-[#1a6aff]">Data Dependency:</b> Managing diverse data sets for AI testing.</span></li>
+                            <li class="flex items-start"><span class="text-[#e1bc36] mr-3 mt-1">➔</span><span><strong class="text-[#1a6aff]">AI Regression:</b> Verifying model updates don't break functionality.</span></li>
+                        </ul>
+                        <button class="px-4 py-2 bg-[#1a6aff] text-white rounded-md hover:bg-[#00008b] transition-colors duration-200 self-start" onclick="showExplanation('ai-mcp-testing')">✨ Elaborate on AI/MCP Testing ✨</button>
+
+                        <h3 class="text-2xl font-bold mt-6 mb-4 text-[#1a6aff]">Hybrid Data Access Challenges</h3>
+                        <p class="mb-4 text-black">Our applications interact with data across on-premise and cloud systems, demanding rigorous testing for integrity, connectivity, and security.</p>
+                        <div class="w-full bg-gray-200 rounded-full h-6">
+                           <div class="bg-[#e1bc36] h-6 rounded-full text-center text-black font-bold" style="width: 85%">85%</div>
+                        </div>
+                        <p class="text-sm text-center mt-2 text-black">85% of our new applications rely on hybrid data access, highlighting the urgent need for tools that can test these complex data flows.</p>
+                         <button class="mt-4 px-4 py-2 bg-[#1a6aff] text-white rounded-md hover:bg-[#00008b] transition-colors duration-200 self-start" onclick="showExplanation('hybrid-data-access')">✨ Elaborate on Hybrid Data ✨</button>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="solution">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#000000]">The Solution: Strategic Investment in Advanced Tools</h2>
+                 <p class="max-w-3xl mx-auto text-center text-lg text-[#1a6aff] mb-8">By adopting modern functional testing tools, we can bridge the gap, increase efficiency, and ensure the quality of our most complex applications. The new tools will provide significant improvements over our current capabilities.</p>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="chart-container" style="height: 400px; max-height: 450px;">
+                         <canvas id="toolComparisonChart"></canvas>
+                    </div>
+                    <p class="mt-4 text-sm text-black text-center">This chart compares the capabilities of our current tools against modern solutions, showing significant gains in AI testing, hybrid data support, and automation stability.</p>
+                </div>
+            </section>
+
+            <section id="benefits">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#000000]">Expected Business Outcomes</h2>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="text-4xl text-[#e1bc36] mr-4">🚀</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-[#1a6aff]">Faster Time-to-Market</h3>
+                                <p class="text-black">Reduce testing cycles by up to 40% through better automation and parallel testing.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="text-4xl text-[#e1bc36] mr-4">🛡️</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-[#1a6aff]">Enhanced Quality</h3>
+                                <p class="text-black">Increase test coverage by 50%, leading to a significant reduction in production defects.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="text-4xl text-[#e1bc36] mr-4">💰</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-[#1a6aff]">Reduced Costs</h3>
+                                <p class="text-black">Lower rework and support costs by catching critical bugs before they reach production.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="text-4xl text-[#e1bc36] mr-4">📈</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-[#1a6aff]">Increased Productivity</h3>
+                                <p class="text-black">Free up QA and dev teams to focus on innovation instead of test maintenance and manual execution.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center mb-4">
+                            <div class="text-4xl text-[#e1bc36] mr-4">🎯</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-[#1a6aff]">Improved Risk Management</h3>
+                                <p class="text-black">Better coverage of critical functionalities mitigates business risks associated with application failures.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="bg-[#00008b] text-white p-6 rounded-lg shadow-lg flex flex-col justify-center items-center text-center">
+                        <h3 class="text-2xl font-bold mb-2">Ready for the Future</h3>
+                        <p>Let's invest in the right tools to build a foundation of quality for tomorrow's applications.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-4 text-[#1a6aff]"></h2>
+            <p id="modalContent" class="text-black"></p>
+            <div id="loadingIndicator" class="mt-4 text-center text-[#1a6aff]" style="display: none;">
+                Generating explanation...
+            </div>
+        </div>
+    </div>
+
+    <div id="downloadLoadingOverlay" class="download-loading-overlay">
+        <div class="spinner"></div>
+        <p>Preparing PDF for download...</p>
+    </div>
+
+    <script>
+        const wrapText = (str) => {
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > 16) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            });
+            lines.push(currentLine.trim());
+            return lines.filter(line => line.length > 0);
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+
+        const vibrantPalette = {
+            primary: '#1a6aff', 
+            secondary: '#e1bc36', 
+            accent: '#00008b', 
+            neutral: '#e0e0e0',
+            text: '#000000'
+        };
+
+        const complexityDriversCtx = document.getElementById('complexityDriversChart').getContext('2d');
+        new Chart(complexityDriversCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['AI & MCP Integration', 'Hybrid Data Access', 'Microservices', 'API Dependencies'],
+                datasets: [{
+                    label: 'Complexity Drivers',
+                    data: [35, 30, 20, 15],
+                    backgroundColor: [vibrantPalette.primary, vibrantPalette.secondary, vibrantPalette.accent, '#00008b'],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const toolComparisonCtx = document.getElementById('toolComparisonChart').getContext('2d');
+        const toolComparisonLabels = ['AI/MCP Testing', 'Hybrid Data Support', 'Automation Stability', 'CI/CD Integration', wrapText('End-to-End Coverage')];
+        new Chart(toolComparisonCtx, {
+            type: 'radar',
+            data: {
+                labels: toolComparisonLabels,
+                datasets: [{
+                    label: 'Current Tools',
+                    data: [2, 3, 4, 6, 5],
+                    backgroundColor: 'rgba(225, 188, 54, 0.2)',
+                    borderColor: vibrantPalette.secondary,
+                    pointBackgroundColor: vibrantPalette.secondary,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: vibrantPalette.secondary
+                }, {
+                    label: 'Modern Tools',
+                    data: [8, 9, 8, 9, 9],
+                    backgroundColor: 'rgba(26, 106, 255, 0.2)',
+                    borderColor: vibrantPalette.primary,
+                    pointBackgroundColor: vibrantPalette.primary,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: vibrantPalette.primary
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                         callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: '#e0e0e0'
+                        },
+                        grid: {
+                            color: '#e0e0e0'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 12
+                            },
+                            color: vibrantPalette.text
+                        },
+                        ticks: {
+                           backdropColor: 'transparent',
+                           stepSize: 2
+                        }
+                    }
+                }
+            }
+        });
+
+        const infoModal = document.getElementById('infoModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const downloadLoadingOverlay = document.getElementById('downloadLoadingOverlay');
+
+        function openModal() {
+            infoModal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            infoModal.style.display = 'none';
+            modalTitle.textContent = '';
+            modalContent.textContent = '';
+            loadingIndicator.style.display = 'none';
+        }
+
+        async function callGeminiAPI(prompt) {
+            loadingIndicator.style.display = 'block';
+            modalContent.textContent = '';
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    modalContent.textContent = text;
+                } else {
+                    modalContent.textContent = "Could not generate explanation. Please try again.";
+                    console.error("Gemini API response structure unexpected:", result);
+                }
+            } catch (error) {
+                modalContent.textContent = "Error fetching explanation. Please check your network or try again later.";
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        async function showExplanation(concept) {
+            openModal();
+            let prompt = "";
+            switch (concept) {
+                case 'limited-coverage':
+                    modalTitle.textContent = "Elaborating on Limited Coverage";
+                    prompt = "Explain 'Limited Coverage in Functional Testing' for a VP of Application Management. Focus on challenges with microservices and API-driven architectures. Keep it concise.";
+                    break;
+                case 'manual-bottlenecks':
+                    modalTitle.textContent = "Elaborating on Manual Bottlenecks";
+                    prompt = "Explain 'Manual Bottlenecks in Functional Testing' for a VP of Application Management. Focus on how it impacts release cycles and human error. Keep it concise.";
+                    break;
+                case 'high-maintenance':
+                    modalTitle.textContent = "Elaborating on High Maintenance";
+                    prompt = "Explain 'High Maintenance in Automated Tests' for a VP of Application Management. Focus on brittleness due to UI changes and engineering time consumption. Keep it concise.";
+                    break;
+                case 'slow-feedback':
+                    modalTitle.textContent = "Elaborating on Slow Feedback";
+                    prompt = "Explain 'Slow Feedback Loops in Functional Testing' for a VP of Application Management. Focus on how it hinders agile and DevOps initiatives. Keep it concise.";
+                    break;
+                case 'ai-mcp-testing':
+                    modalTitle.textContent = "Elaborating on AI & MCP Testing Demands";
+                    prompt = "Explain 'AI and MCP Testing Demands in Functional Testing' for a VP of Application Management. Focus on validating AI model integration, data dependencies, and complex AI-driven workflows. Keep it concise.";
+                    break;
+                case 'hybrid-data-access':
+                    modalTitle.textContent = "Elaborating on Hybrid Data Access Challenges";
+                    prompt = "Explain 'Hybrid Data Access Challenges in Functional Testing' for a VP of Application Management. Focus on data integrity, consistency, connectivity, security, and complex data flows across on-premise and cloud systems. Keep it concise.";
+                    break;
+                default:
+                    modalTitle.textContent = "Concept Not Found";
+                    modalContent.textContent = "No explanation available for this concept.";
+                    loadingIndicator.style.display = 'none';
+                    return;
+            }
+            await callGeminiAPI(prompt);
+        }
+
+        async function showBestPractices() {
+            openModal();
+            modalTitle.textContent = "Best Practice Suggestions";
+            const prompt = "Suggest 3 key best practices for overcoming the common challenges in functional testing (e.g., limited coverage, manual bottlenecks, high maintenance, slow feedback, AI testing, hybrid data access) for a VP of Application Management. Provide actionable advice.";
+            await callGeminiAPI(prompt);
+        }
+
+        async function downloadPdf() {
+            downloadLoadingOverlay.style.display = 'flex';
+            const input = document.getElementById('infographicContent');
+            const { jsPDF } = window.jspdf;
+
+            try {
+                const canvas = await html2canvas(input, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    windowWidth: input.scrollWidth,
+                    windowHeight: input.scrollHeight
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 210; 
+                const pageHeight = 297; 
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save("Functional_Testing_Infographic.pdf");
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+                alert("Failed to generate PDF. Please try again.");
+            } finally {
+                downloadLoadingOverlay.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
