@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMO's AI-Ready PMM Playbook</title>
+    <!-- Chosen Palette: "Calm Harmony" - A base of warm neutrals (slate gray) with indigo and violet accents for a professional, tech-forward feel. -->
+    <!-- Application Structure Plan: A tab-based single-page application is chosen to provide a clear, user-directed navigation path through three distinct but related concepts, tailored for a CMO. This structure prevents cognitive overload by chunking information logically. The CMO can explore: 1) 'The AI-Ready PMM Leader' (traits and strategic impact of such a leader), 2) 'The VP PMM's Playbook' (core PMM functions led by the VP PMM), and 3) 'The Growth Roadmap' (the 18-month plan as implemented by the VP PMM). This is intuitive, allowing CMOs to quickly grasp the strategic value and implementation path. -->
+    <!-- Visualization & Content Choices: 1. AI-Ready Leader (Goal: Inform/Persuade) -> A structured grid layout for traits and impact. Justification: Clearly presents key attributes and strategic contributions, essential for a CMO's evaluation, and is now the primary entry point. 2. Core Pillars (Goal: Organize/Inform) -> Interactive Cards using HTML/JS. Justification: Allows CMOs to see the strategic areas led by the VP PMM and how AI elevates them. An LLM-powered "Generate Ideas" feature remains to demonstrate AI's practical utility. 3. 18-Month Plan (Goal: Show Change/Process) -> A tabbed timeline with a dynamic Bar Chart (Chart.js). Justification: Visually communicates the VP PMM's strategic progression and the evolving business outcomes. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        .tab-active { border-color: #4f46e5; color: #4f46e5; background-color: #eef2ff; }
+        .tab-inactive { border-color: transparent; color: #475569; }
+        .pillar-card { transition: all 0.3s ease-in-out; }
+        .pillar-card.active { border-color: #6366f1; transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .details-section { max-height: 0; overflow: hidden; transition: max-height 0.7s ease-in-out; }
+        .details-section.open { max-height: 1000px; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 450px; }
+        .phase-tab.active { background-color: #4f46e5; color: white; }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900">The <span class="text-indigo-600">CMO's</span> AI-Ready PMM Playbook</h1>
+            <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">A strategic guide for CMOs to understand how a VP of Product Marketing drives growth and innovation in the AI age.</p>
+        </header>
+
+        <!-- Main Navigation -->
+        <div class="mb-10 border-b border-slate-300">
+            <nav class="flex flex-wrap -mb-px justify-center" id="main-nav">
+                <button data-target="ai-leader" class="nav-tab tab-active text-lg font-semibold p-4 border-b-2 rounded-t-lg">The AI-Ready PMM Leader</button>
+                <button data-target="playbook" class="nav-tab tab-inactive text-lg font-semibold p-4 border-b-2 rounded-t-lg">The VP PMM's Playbook</button>
+                <button data-target="roadmap" class="nav-tab tab-inactive text-lg font-semibold p-4 border-b-2 rounded-t-lg">The Growth Roadmap</button>
+            </nav>
+        </div>
+
+        <!-- Content Sections -->
+        <div id="content-sections">
+            <!-- Section 3: The AI-Ready PMM Leader (Now first) -->
+            <section id="ai-leader" class="content-section">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900">What an AI-Ready VP PMM Brings</h2>
+                    <p class="mt-2 text-md text-slate-600 max-w-2xl mx-auto">A strategic VP PMM is crucial for harnessing AI's full potential. Here are the traits to look for and the transformative impact they deliver to your marketing organization.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-500">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">Essential Traits of an AI-Ready VP PMM</h3>
+                        <ul class="list-disc list-inside text-slate-700 space-y-2">
+                            <li><strong class="text-slate-800">Visionary & Strategic Thinker:</strong> Anticipates trends, integrates AI into long-term marketing strategy.</li>
+                            <li><strong class="text-slate-800">Data Fluency & Analytical Acumen:</strong> Interprets AI insights, ensures data integrity, drives data-driven decisions.</li>
+                            <li><strong class="text-slate-800">Technological Aptitude:</strong> Understands AI capabilities, evaluates tools, champions the 'PMM Technologist' role.</li>
+                            <li><strong class="text-slate-800">Change Management & Leadership:</strong> Guides teams through tech shifts, fosters experimentation, overcomes resistance.</li>
+                            <li><strong class="text-slate-800">Cross-Functional Orchestrator:</strong> Aligns Product, Sales, and Marketing teams around AI-driven insights.</li>
+                            <li><strong class="text-slate-800">Customer-Centricity (AI-Enhanced):</strong> Leverages AI to deepen customer understanding and optimize product-market fit.</li>
+                            <li><strong class="text-slate-800">Experimentation Mindset:</strong> Drives rapid testing, learning, and iteration with new AI capabilities.</li>
+                            <li><strong class="text-slate-800">Ethical AI Steward:</strong> Ensures responsible and ethical deployment of AI tools and practices.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-violet-500">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">Strategic Impact on the Marketing Group</h3>
+                        <ul class="list-disc list-inside text-slate-700 space-y-2">
+                            <li><strong class="text-slate-800">Elevates PMM to Strategic Orchestrator:</strong> Frees PMMs from tactical tasks, enabling focus on high-value strategic initiatives.</li>
+                            <li><strong class="text-slate-800">Centralizes Content with AI:</strong> Establishes an "Enablement Content Engine" for rapid, consistent, AI-driven collateral creation.</li>
+                            <li><strong class="text-slate-800">Builds AI Operational Excellence:</strong> Introduces and champions the "PMM Technologist" role, bridging marketing and technology.</li>
+                            <li><strong class="text-slate-800">Redefines Cross-Functional Collaboration:</strong> Implements AI-powered feedback loops for continuous, data-driven dialogue with Product and Sales.</li>
+                            <li><strong class="text-slate-800">Drives Predictable Revenue Growth:</strong> Builds a scalable, data-driven engine for qualified leads and loyal customers.</li>
+                            <li><strong class="text-slate-800">Achieves Significant Competitive Advantage:</strong> Leverages real-time market insights and optimized strategies through advanced AI.</li>
+                            <li><strong class="text-slate-800">Optimizes Resource Allocation:</strong> Uses AI for strategic insights to recommend budget allocation and pivot strategies.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 1: The VP PMM's Playbook (Now second) -->
+            <section id="playbook" class="content-section hidden">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900">Strategic Pillars Led by Your VP PMM</h2>
+                    <p class="mt-2 text-md text-slate-600 max-w-2xl mx-auto">These are the critical areas where your VP PMM will drive strategic outcomes and leverage AI to maximize impact across the organization.</p>
+                </div>
+                <div id="pillars-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- Pillar cards will be dynamically inserted here -->
+                </div>
+                <div id="pillar-details" class="mt-6">
+                    <!-- Details for the selected pillar will be shown here -->
+                </div>
+            </section>
+
+            <!-- Section 2: The Growth Roadmap (Now third) -->
+            <section id="roadmap" class="content-section hidden">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-slate-900">The VP PMM's 18-Month Growth Blueprint</h2>
+                    <p class="mt-2 text-md text-slate-600 max-w-2xl mx-auto">This phased plan outlines how your VP PMM will strategically build and scale an AI-powered marketing engine, delivering measurable business outcomes at each stage.</p>
+                </div>
+                
+                <div class="mb-8 flex justify-center flex-wrap gap-2" id="phase-tabs">
+                     <button data-phase="0" class="phase-tab active px-6 py-2 font-semibold rounded-full shadow-sm">Phase 1: Foundation (0-6 Mos)</button>
+                     <button data-phase="1" class="phase-tab px-6 py-2 font-semibold rounded-full shadow-sm">Phase 2: Acceleration (7-12 Mos)</button>
+                     <button data-phase="2" class="phase-tab px-6 py-2 font-semibold rounded-full shadow-sm">Phase 3: Scaling (13-18 Mos)</button>
+                </div>
+
+                <div id="phase-details-container">
+                    <!-- Phase details will be dynamically inserted here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const AppData = {
+            pillars: [
+                {
+                    id: 0,
+                    name: 'Market & Customer Intelligence',
+                    icon: '🧠',
+                    activities: ['Conducting market research & sizing', 'Building and refining buyer personas', 'Performing competitive analysis', 'Running customer interviews & surveys', 'Analyzing sales data & win/loss reports'],
+                    cmoFocus: 'Your VP PMM will establish a robust intelligence backbone, leveraging AI to provide continuous, real-time insights into market shifts and customer needs, informing strategic pivots and competitive responses.',
+                    aiImpact: {
+                        genAI: 'Instantly summarizes unstructured data (interviews, surveys) to surface key themes. Generates initial drafts of competitive analyses.',
+                        agenticAI: 'Deploys autonomous agents to continuously monitor competitors and market trends, delivering synthesized intelligence reports.'
+                    },
+                    collaborators: {
+                        internal: ['Marketing Analytics', 'Content Team', 'Brand Team'],
+                        external: ['Product Management', 'Sales', 'Customer Success', 'Executive Leadership']
+                    }
+                },
+                {
+                    id: 1,
+                    name: 'Strategic Positioning & Messaging',
+                    icon: '🎯',
+                    activities: ['Defining the Unique Value Proposition (UVP)', 'Developing product positioning statements', 'Creating core messaging pillars & narrative', 'Crafting product-level taglines & descriptions', 'Testing messaging with target audiences'],
+                    cmoFocus: 'Your VP PMM will ensure consistent, value-driven messaging across all touchpoints, using AI to rapidly test, refine, and personalize communication for maximum market resonance and conversion.',
+                    aiImpact: {
+                        genAI: 'Generates numerous messaging variations and value propositions for A/B testing. Automatically adapts core messaging for different personas and verticals.',
+                        agenticAI: 'Runs automated, multi-channel messaging tests and optimizes copy in real-time based on engagement metrics.'
+                    },
+                    collaborators: {
+                        internal: ['Content Team', 'Brand Team', 'PR/Comms', 'Demand Generation'],
+                        external: ['Product Management', 'Sales', 'Executive Leadership']
+                    }
+                },
+                {
+                    id: 2,
+                    name: 'Go-to-Market (GTM) & Launch',
+                    icon: '🚀',
+                    activities: ['Developing the comprehensive GTM strategy', 'Defining launch tiers, goals, and KPIs', 'Managing the cross-functional launch plan', 'Coordinating launch-day activities', 'Conducting post-launch retrospectives'],
+                    cmoFocus: 'Your VP PMM will orchestrate seamless, high-impact product launches, leveraging AI for efficient planning, risk mitigation, and optimized resource allocation to ensure market penetration and adoption.',
+                    aiImpact: {
+                        genAI: 'Creates first drafts of GTM plans, project timelines, and launch checklists from best-practice templates. Generates creative briefs for launch assets.',
+                        agenticAI: 'Manages and tracks launch tasks, sending automated reminders, flagging risks, and dynamically allocating budget to top-performing channels.'
+                    },
+                    collaborators: {
+                        internal: ['Demand Generation', 'Content Team', 'PR/Comms', 'Social Media Team'],
+                        external: ['Product Management', 'Sales', 'Engineering/Dev', 'Support/Services', 'Legal']
+                    }
+                },
+                {
+                    id: 3,
+                    name: 'Sales & Partner Enablement',
+                    icon: '🤝',
+                    activities: ['Creating sales collateral (pitch decks, battle cards)', 'Developing product one-pagers & datasheets', 'Building and delivering sales training', 'Creating customer case studies & testimonials', 'Equipping channel partners with materials'],
+                    cmoFocus: 'Your VP PMM will empower your sales and partner channels with AI-accelerated, personalized enablement tools, ensuring they have the most effective materials to close deals and drive revenue.',
+                    aiImpact: {
+                        genAI: 'Radically accelerates content creation by generating first drafts of all sales collateral. Creates customized case studies for specific industries on demand.',
+                        agenticAI: 'Creates intelligent knowledge bases where reps get instant answers. Auto-personalizes pitch decks based on CRM data for each prospect.'
+                    },
+                    collaborators: {
+                        internal: ['Content Team', 'Brand Team', 'Marketing Ops'],
+                        external: ['Sales & Sales Ops', 'Partner/Channel Team', 'Customer Success', 'Solutions Engineering']
+                    }
+                },
+                {
+                    id: 4,
+                    name: 'Customer Lifecycle & Adoption',
+                    icon: '📈',
+                    activities: ['Developing onboarding email campaigns', 'Creating in-app messaging for feature discovery', 'Gathering customer stories for advocacy', 'Marketing new features to existing users', 'Monitoring product adoption & usage metrics'],
+                    cmoFocus: 'Your VP PMM will optimize the post-acquisition customer journey, using AI to drive higher product adoption, foster advocacy, and reduce churn by ensuring continuous value delivery.',
+                    aiImpact: {
+                        genAI: 'Writes entire personalized onboarding and feature announcement email sequences. Generates copy for in-app guidance and tooltips.',
+                        agenticAI: 'Monitors user behavior to trigger personalized, automated campaigns that guide users to value and proactively identifies at-risk accounts for CSMs.'
+                    },
+                    collaborators: {
+                        internal: ['Email Marketing Team', 'Marketing Analytics', 'Content Team'],
+                        external: ['Customer Success', 'Product Management', 'Support Team']
+                    }
+                }
+            ],
+            roadmap: [
+                {
+                    phase: 'Phase 1: Foundation & Traction',
+                    objective: 'The VP PMM establishes the core marketing foundation, achieving initial market traction and gathering essential data. Focus is on high-impact essentials with a lean, agile approach.',
+                    kpis: ['Website Traffic', 'Lead Volume', 'Cost per Lead (CPL)', 'Content Engagement'],
+                    focus: {
+                        Team_Leadership: ['VP PMM hires foundational Head of Marketing / Sr. PMM (Player-Coach).'],
+                        Strategic_Direction: ['VP PMM oversees ICP & Persona definition, V1 Messaging & Positioning, and Competitive Analysis.'],
+                        Technology_Setup: ['VP PMM ensures implementation of Foundational MarTech (CRM, Analytics) and Core Metrics Dashboard.'],
+                        Execution_Oversight: ['VP PMM guides launch of "Content Cornerstone", initial Channel Experiments, and Basic SEO.'],
+                        AI_Integration_Initiation: ['VP PMM champions early GenAI for Content Velocity and AI for Research Summaries.']
+                    }
+                },
+                {
+                    phase: 'Phase 2: Acceleration & Optimization',
+                    objective: 'The VP PMM scales effective channels, builds a repeatable content engine, and strategically hires specialized talent to deepen marketing capabilities.',
+                    kpis: ['Marketing Qualified Leads (MQLs)', 'Sales Qualified Leads (SQLs)', 'MQL-to-SQL Conversion Rate', 'Customer Acquisition Cost (CAC)'],
+                    focus: {
+                        Team_Expansion: ['VP PMM hires Specialists: Content Marketing Manager & Demand Generation Manager, transitioning to more strategic leadership.'],
+                        Strategic_Refinement: ['VP PMM directs messaging refinement with data and development of Customer Case Studies.'],
+                        Technology_Enhancement: ['VP PMM oversees Marketing Automation implementation and appoints a "Marketing Technologist" (initially fractional).'],
+                        Execution_Scaling: ['VP PMM drives scaling of Proven Channels, building of "Enablement Content Engine", and launch of Webinar Program.'],
+                        AI_Integration_Deepening: ['VP PMM ensures GenAI for Sales Enablement and AI for Personalization in Automation are leveraged.']
+                    }
+                },
+                {
+                    phase: 'Phase 3: Scaling & Intelligence',
+                    objective: 'The VP PMM leads the organization to market leadership through advanced, data-driven strategies, a fully optimized tech stack, and deep integration of Agentic AI for competitive advantage.',
+                    kpis: ['Pipeline Contribution', 'Marketing-Sourced Revenue', 'Customer Lifetime Value (LTV)', 'LTV:CAC Ratio'],
+                    focus: {
+                        Team_Maturity: ['VP PMM elevates leadership roles and hires Analyst/Ops Support.'],
+                        Strategic_Mastery: ['VP PMM implements Full Funnel Analytics and develops Analyst Relations Strategy.'],
+                        Technology_Advancement: ['VP PMM deploys Agentic AI for Competitive Intelligence and GTM Project Management.'],
+                        Execution_Excellence: ['VP PMM institutionalizes AI-Powered Feedback Loops, expands to New Channels, and launches Customer Advocacy Program.'],
+                        AI_Integration_Strategic: ['VP PMM ensures Agentic AI for Real-time Intelligence and AI for Strategic Insights & Budget Allocation are fully utilized.']
+                    }
+                }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainNav = document.getElementById('main-nav');
+            const contentSections = document.querySelectorAll('.content-section');
+            const pillarsContainer = document.getElementById('pillars-container');
+            const pillarDetailsContainer = document.getElementById('pillar-details');
+            const phaseTabsContainer = document.getElementById('phase-tabs');
+            let activePillarCard = null;
+
+            function switchMainTab(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.toggle('hidden', section.id !== targetId);
+                });
+                mainNav.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.classList.toggle('tab-active', tab.dataset.target === targetId);
+                    tab.classList.toggle('tab-inactive', tab.dataset.target !== targetId);
+                });
+            }
+            
+            mainNav.addEventListener('click', (e) => {
+                if (e.target.matches('.nav-tab')) {
+                    switchMainTab(e.target.dataset.target);
+                }
+            });
+
+            function renderPillars() {
+                AppData.pillars.forEach(pillar => {
+                    const card = document.createElement('div');
+                    card.className = 'pillar-card cursor-pointer p-4 bg-white rounded-xl border-2 border-transparent shadow-sm hover:shadow-lg hover:border-indigo-300';
+                    card.dataset.pillarId = pillar.id;
+                    card.innerHTML = `<div class="text-4xl mb-3">${pillar.icon}</div><h3 class="font-bold text-slate-800">${pillar.name}</h3>`;
+                    pillarsContainer.appendChild(card);
+                });
+            }
+
+            async function generateIdeas(pillarName, activities, outputElement, spinnerElement, buttonElement) {
+                outputElement.innerHTML = '';
+                spinnerElement.classList.remove('hidden');
+                buttonElement.disabled = true;
+
+                const prompt = `As a Product Marketing Manager, give me 5 actionable ideas for "${pillarName}" focusing on activities like: ${activities.join(', ')}. Keep each idea concise.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        outputElement.innerHTML = `<h4 class="font-semibold text-lg mb-2 text-indigo-700">AI-Generated Ideas:</h4><p class="text-slate-600 whitespace-pre-wrap">${text}</p>`;
+                    } else {
+                        outputElement.innerHTML = `<p class="text-red-500">Failed to generate ideas. Please try again.</p>`;
+                    }
+                } catch (error) {
+                    outputElement.innerHTML = `<p class="text-red-500">Error: ${error.message}. Please check your network connection.</p>`;
+                } finally {
+                    spinnerElement.classList.add('hidden');
+                    buttonElement.disabled = false;
+                }
+            }
+
+            function renderPillarDetails(pillarId) {
+                const pillar = AppData.pillars.find(p => p.id == pillarId);
+                if (!pillar) return;
+
+                const detailsHTML = `
+                    <div class="bg-white rounded-xl shadow-lg p-6 border border-indigo-200">
+                        <h3 class="text-2xl font-bold mb-4 text-slate-900">${pillar.name}</h3>
+                        <p class="text-slate-700 mb-4">${pillar.cmoFocus}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2 text-indigo-700">Key Activities</h4>
+                                <ul class="list-disc list-inside text-slate-600 space-y-1">${pillar.activities.map(act => `<li>${act}</li>`).join('')}</ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2 text-indigo-700">AI Impact</h4>
+                                <p class="text-slate-600 mb-2"><strong class="text-slate-800">Generative AI:</strong> ${pillar.aiImpact.genAI}</p>
+                                <p class="text-slate-600"><strong class="text-slate-800">Agentic AI:</strong> ${pillar.aiImpact.agenticAI}</p>
+                            </div>
+                             <div>
+                                <h4 class="font-semibold text-lg mb-2 text-indigo-700">Key Collaborators</h4>
+                                <p class="text-slate-600 mb-2"><strong class="text-slate-800">Internal:</strong> ${pillar.collaborators.internal.join(', ')}</p>
+                                <p class="text-slate-600"><strong class="text-slate-800">External:</strong> ${pillar.collaborators.external.join(', ')}</p>
+                            </div>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-slate-200">
+                            <button id="generateIdeasBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-105">
+                                Generate Ideas ✨ <span id="ideasSpinner" class="loading-spinner hidden"></span>
+                            </button>
+                            <div id="llmOutput" class="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200 text-left">
+                                <p class="text-slate-500">Click "Generate Ideas ✨" to get actionable suggestions for this pillar!</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                pillarDetailsContainer.innerHTML = detailsHTML;
+                pillarDetailsContainer.classList.add('open');
+
+                const generateIdeasBtn = document.getElementById('generateIdeasBtn');
+                const ideasSpinner = document.getElementById('ideasSpinner');
+                const llmOutput = document.getElementById('llmOutput');
+
+                generateIdeasBtn.addEventListener('click', () => {
+                    generateIdeas(pillar.name, pillar.activities, llmOutput, ideasSpinner, generateIdeasBtn);
+                });
+            }
+
+            pillarsContainer.addEventListener('click', (e) => {
+                const card = e.target.closest('.pillar-card');
+                if (card) {
+                    if (activePillarCard) {
+                        activePillarCard.classList.remove('active');
+                    }
+                    card.classList.add('active');
+                    activePillarCard = card;
+                    renderPillarDetails(card.dataset.pillarId);
+                }
+            });
+            
+            let kpiChart = null;
+            function renderPhaseDetails(phaseIndex) {
+                 const phase = AppData.roadmap[phaseIndex];
+                 const container = document.getElementById('phase-details-container');
+                 const focusAreas = Object.entries(phase.focus).map(([key, value]) => `
+                    <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-indigo-800 mb-2">${key.replace(/_/g, ' ')}</h4>
+                        <ul class="list-disc list-inside text-slate-700 space-y-1">${value.map(v => `<li>${v}</li>`).join('')}</ul>
+                    </div>
+                 `).join('');
+
+                 container.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                         <h3 class="text-2xl font-bold text-slate-900 mb-1">${phase.phase}</h3>
+                         <p class="text-slate-600 mb-6">${phase.objective}</p>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            ${focusAreas}
+                         </div>
+                         <h3 class="text-xl font-bold text-center text-slate-900 mb-4">Evolving KPIs</h3>
+                         <div class="chart-container">
+                            <canvas id="kpiChart"></canvas>
+                         </div>
+                    </div>
+                 `;
+                 
+                const ctx = document.getElementById('kpiChart').getContext('2d');
+                if(kpiChart) {
+                    kpiChart.destroy();
+                }
+                kpiChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: phase.kpis,
+                        datasets: [{
+                            label: `Key Metrics for ${phase.phase}`,
+                            data: phase.kpis.map(() => Math.floor(Math.random() * 80) + 20),
+                            backgroundColor: '#4f46e5',
+                            borderColor: '#3730a3',
+                            borderWidth: 1,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true, max: 100 } },
+                        plugins: { legend: { display: false }, tooltip: { displayColors: false } }
+                    }
+                });
+            }
+            
+            phaseTabsContainer.addEventListener('click', e => {
+                if(e.target.matches('.phase-tab')){
+                    phaseTabsContainer.querySelectorAll('.phase-tab').forEach(tab => tab.classList.remove('active'));
+                    e.target.classList.add('active');
+                    renderPhaseDetails(parseInt(e.target.dataset.phase));
+                }
+            });
+
+            function renderAiLeaderSection() {
+                // This section is hardcoded in HTML as it's a static content block for the CMO audience.
+                // No dynamic rendering needed from AppData for this specific section's content.
+            }
+
+            // Initial render calls - ensure the correct section is displayed first
+            switchMainTab('ai-leader'); // Set AI Leader as the initially active tab
+            renderPillars();
+            renderPhaseDetails(0); // Render phase details for the first phase
+            renderAiLeaderSection();
+        });
+    </script>
+</body>
+</html>
