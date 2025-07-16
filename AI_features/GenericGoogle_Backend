@@ -1,0 +1,48 @@
+// This is conceptual server-side code, not part of your HTML file
+const express = require('express');
+const cors = require('cors'); // For handling Cross-Origin Resource Sharing
+const fetch = require('node-fetch'); // For making HTTP requests from Node.js
+
+const app = express();
+app.use(express.json()); // To parse JSON request bodies
+app.use(cors()); // Allow requests from your frontend domain
+
+// Load your API key from environment variables (BEST PRACTICE)
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+app.post('/api/generate-ideas', async (req, res) => {
+    const { prompt } = req.body;
+
+    if (!prompt) {
+        return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    try {
+        const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+            res.json({ text: result.candidates[0].content.parts[0].text });
+        } else {
+            res.status(500).json({ error: 'Failed to get a valid response from the LLM.' });
+        }
+    } catch (error) {
+        console.error('Error calling Gemini API:', error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
