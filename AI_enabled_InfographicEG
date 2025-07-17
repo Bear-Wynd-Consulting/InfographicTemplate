@@ -260,27 +260,23 @@
                 let chatHistory = [];
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+               const yourBackendUrl = '/api/generate-ideas'; // Or 'https://yourdomain.com/api/generate-ideas' if hosted separately
+try {
+    const response = await fetch(yourBackendUrl, { // Call your backend
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt }) // Send only the prompt to your backend
+    });
+    const result = await response.json();
 
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const result = await response.json();
-
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        outputElement.innerHTML = `<h4 class="font-semibold text-lg mb-2 text-indigo-700">AI-Generated Ideas:</h4><p class="text-slate-600 whitespace-pre-wrap">${text}</p>`;
-                    } else {
-                        outputElement.innerHTML = `<p class="text-red-500">Failed to generate ideas. Please try again.</p>`;
-                    }
-                } catch (error) {
-                    outputElement.innerHTML = `<p class="text-red-500">Error: ${error.message}. Please check your network connection.</p>`;
+    if (response.ok) { // Check if your backend responded successfully
+        outputElement.innerHTML = `<h4 class="font-semibold text-lg mb-2 text-indigo-700">AI-Generated Ideas:</h4><p class="text-slate-600 whitespace-pre-wrap">${result.text}</p>`;
+    } else {
+        outputElement.innerHTML = `<p class="text-red-500">Failed to generate ideas: ${result.error || 'Unknown error'}.</p>`;
+    }
+    // ... rest of your code
+} catch (error) {
+                     outputElement.innerHTML = `<p class="text-red-500">Error: ${error.message}. Please check your network connection.</p>`;
                 } finally {
                     spinnerElement.classList.add('hidden');
                     buttonElement.disabled = false;
