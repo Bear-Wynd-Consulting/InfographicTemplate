@@ -1,0 +1,19 @@
+// backend/package.json
+{
+  "name": "pmm-backend",
+  "version": "1.0.0",
+  "description": "Backend for PMM Playbook",
+  "main": "server.js", // Make sure this points to your server file
+  "scripts": {
+    "start": "node server.js", // Add this line
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "node-fetch": "^2.7.0" // Ensure this version or higher is compatible
+  }
+}
